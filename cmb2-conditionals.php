@@ -5,7 +5,7 @@
  * @package     WordPress\Plugins\CMB2 Conditionals
  * @author      José Carlos Chávez <jcchavezs@gmail.com>
  * @link        https://github.com/jcchavezs/cmb2-conditionals
- * @version     1.0.4
+ * @version     1.0.5
  *
  * @copyright   2015 José Carlos Chávez
  * @license     http://creativecommons.org/licenses/GPL/2.0/ GNU General Public License, version 3 or higher
@@ -18,7 +18,7 @@
  * Author URI:        http://github.com/jcchavezs
  * Github Plugin URI: https://github.com/jcchavezs/cmb2-conditionals
  * Github Branch:     master
- * Version:           1.0.4
+ * Version:           1.0.5
  * License:           GPL v3
  *
  * Copyright (C) 2015, José Carlos Chávez - jcchavezs@gmail.com
@@ -38,6 +38,27 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
+if (is_admin()) {
+    add_action('plugins_loaded', 'CMB2_Conditionals_check_for_updates');
+}
+
+if (!function_exists('CMB2_Conditionals_check_for_updates')) {
+    function CMB2_Conditionals_check_for_updates() {
+        if (defined("XY_PLUGIN_UPDATE_CHECKER_LOCATION")
+            && defined("XY_PLUGIN_UPDATE_CHECKER_GITHUB_KEY")
+            && file_exists(ABSPATH . XY_PLUGIN_UPDATE_CHECKER_LOCATION)) {
+            require_once ABSPATH . XY_PLUGIN_UPDATE_CHECKER_LOCATION;
+            $update_check = \Puc_v4_Factory::buildUpdateChecker(
+                'https://github.com/ExpectancyLearning/cmb2-conditionals',
+                plugin_dir_path(__FILE__) . "cmb2-conditionals.php",
+                'cmb2-conditionals'
+            );
+            $update_check->setBranch('master');
+            $update_check->setAuthentication(XY_PLUGIN_UPDATE_CHECKER_GITHUB_KEY);
+        }
+    }
+}
 
 if ( ! class_exists( 'CMB2_Conditionals', false ) ) {
 
